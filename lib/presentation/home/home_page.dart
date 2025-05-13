@@ -299,10 +299,12 @@ class _HomePageState extends State<HomePage> {
                         },
                         child: Stack(
                           children: [
+                            // 영화 포스터
                             Hero(
                               tag: '$title-movie-${movie.id}',
                               child: Container(
                                 width: 120,
+                                height: 180,
                                 margin: const EdgeInsets.only(right: 12),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8),
@@ -313,28 +315,43 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            // 반투명한 큰 하얀색 숫자 표시
+                            // 숫자를 표시할 별도의 컨테이너
                             Positioned(
                               left: 0,
+                              top: 80,
                               bottom: 0,
+                              width: 120,
                               child: Container(
-                                width: 120,
-                                height: 80,
-                                alignment: Alignment.centerLeft,
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(
-                                  '${index + 1}',
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 70, // 매우 큰 폰트 크기
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black.withOpacity(0.5),
-                                        blurRadius: 5,
-                                        offset: const Offset(2, 2),
-                                      ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.black.withOpacity(0.6),
+                                      Colors.transparent,
                                     ],
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 10,
+                                    top: 10,
+                                  ),
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 80,
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withOpacity(0.7),
+                                          blurRadius: 5,
+                                          offset: const Offset(2, 2),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
