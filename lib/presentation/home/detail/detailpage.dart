@@ -101,13 +101,53 @@ class _DetailPageState extends State<DetailPage> {
       pinned: true,
       flexibleSpace: FlexibleSpaceBar(
         background: Hero(
-          tag: 'movie-poster-${movieDetail.id}',
-          child: Image.network(movieDetail.posterPath, fit: BoxFit.cover),
+          tag: 'movie-poster-${widget.movieId}',
+          flightShuttleBuilder: (
+            BuildContext flightContext,
+            Animation<double> animation,
+            HeroFlightDirection flightDirection,
+            BuildContext fromHeroContext,
+            BuildContext toHeroContext,
+          ) {
+            final shuttleChild =
+                flightDirection == HeroFlightDirection.push
+                    ? toHeroContext.widget
+                    : fromHeroContext.widget;
+
+            return Material(
+              color: Colors.transparent,
+              child: AnimatedBuilder(
+                animation: animation,
+                builder:
+                    (context, child) =>
+                        Opacity(opacity: animation.value, child: child),
+                child: shuttleChild,
+              ),
+            );
+          },
+          createRectTween: (begin, end) {
+            if (begin == null || end == null) {
+              return RectTween(begin: begin, end: end);
+            }
+            return MaterialRectCenterArcTween(begin: begin, end: end);
+          },
+          child: Image.network(
+            movieDetail.posterPath,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Center(child: Icon(Icons.broken_image));
+            },
+            loadingBuilder: (context, child, progress) {
+              if (progress == null) return child;
+              return const Center(child: CircularProgressIndicator());
+            },
+          ),
         ),
       ),
+      // 단순히 표준 Navigator.pop() 호출로 복원
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => Navigator.of(context).pop(),
       ),
     );
   }

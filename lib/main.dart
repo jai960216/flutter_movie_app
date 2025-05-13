@@ -6,8 +6,10 @@ import 'package:flutter_movie_app/presentation/home/home_page.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  // .env 파일 로드
+  WidgetsFlutterBinding.ensureInitialized();
+  print('[main] 앱 시작');
   await dotenv.load(fileName: '.env');
+  print('[main] .env 로딩 완료');
   runApp(const MyApp());
 }
 

@@ -15,8 +15,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // 화면이 build된 후 데이터 로드
+    print('[HomePage] initState');
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      print('[HomePage] loadAllMovies 시작');
       context.read<HomeViewModel>().loadAllMovies();
     });
   }
@@ -36,7 +37,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'HomePage',
+                    '가장 인기있는',
                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
@@ -132,13 +133,62 @@ class _HomePageState extends State<HomePage> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => DetailPage(movieId: mostPopularMovie.id),
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return DetailPage(movieId: mostPopularMovie.id);
+            },
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) {
+              final curved = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              );
+              return ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.0).animate(curved),
+                child: FadeTransition(opacity: curved, child: child),
+              );
+            },
           ),
         );
       },
       child: Hero(
         tag: 'movie-poster-${mostPopularMovie.id}',
+        flightShuttleBuilder: (
+          BuildContext flightContext,
+          Animation<double> animation,
+          HeroFlightDirection flightDirection,
+          BuildContext fromHeroContext,
+          BuildContext toHeroContext,
+        ) {
+          final shuttleChild =
+              flightDirection == HeroFlightDirection.push
+                  ? fromHeroContext.widget
+                  : toHeroContext.widget;
+
+          return Material(
+            color: Colors.transparent,
+            child: AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                return Opacity(opacity: animation.value, child: child);
+              },
+              child: shuttleChild,
+            ),
+          );
+        },
+
+        createRectTween: (begin, end) {
+          if (begin == null || end == null) {
+            return RectTween(begin: begin, end: end); // fallback
+          }
+          return MaterialRectCenterArcTween(begin: begin, end: end);
+        },
+
         child: Container(
           height: 450,
           width: double.infinity,
@@ -152,17 +202,7 @@ class _HomePageState extends State<HomePage> {
           ),
           child: const Padding(
             padding: EdgeInsets.all(12.0),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                '가장 인기있는',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            child: Align(alignment: Alignment.topLeft),
           ),
         ),
       ),
@@ -216,16 +256,85 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => DetailPage(movieId: movie.id),
+                            PageRouteBuilder(
+                              transitionDuration: const Duration(
+                                milliseconds: 500,
+                              ),
+                              pageBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                              ) {
+                                return DetailPage(movieId: movie.id);
+                              },
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                final curved = CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeInOut,
+                                );
+                                return ScaleTransition(
+                                  scale: Tween<double>(
+                                    begin: 0.95,
+                                    end: 1.0,
+                                  ).animate(curved),
+                                  child: FadeTransition(
+                                    opacity: curved,
+                                    child: child,
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
                         child: Hero(
                           tag: '$title-movie-${movie.id}',
+                          flightShuttleBuilder: (
+                            BuildContext flightContext,
+                            Animation<double> animation,
+                            HeroFlightDirection flightDirection,
+                            BuildContext fromHeroContext,
+                            BuildContext toHeroContext,
+                          ) {
+                            final shuttleChild =
+                                flightDirection == HeroFlightDirection.push
+                                    ? fromHeroContext.widget
+                                    : toHeroContext.widget;
+
+                            return Material(
+                              color: Colors.transparent,
+                              child: AnimatedBuilder(
+                                animation: animation,
+                                builder: (context, child) {
+                                  return Opacity(
+                                    opacity: animation.value,
+                                    child: child,
+                                  );
+                                },
+                                child: shuttleChild,
+                              ),
+                            );
+                          },
+
+                          createRectTween: (begin, end) {
+                            if (begin == null || end == null) {
+                              return RectTween(
+                                begin: begin,
+                                end: end,
+                              ); // fallback
+                            }
+                            return MaterialRectCenterArcTween(
+                              begin: begin,
+                              end: end,
+                            );
+                          },
                           child: Container(
                             width: 120,
+                            height: 180,
                             margin: const EdgeInsets.only(right: 12),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
@@ -291,9 +400,38 @@ class _HomePageState extends State<HomePage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => DetailPage(movieId: movie.id),
+                            PageRouteBuilder(
+                              transitionDuration: const Duration(
+                                milliseconds: 500,
+                              ),
+                              pageBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                              ) {
+                                return DetailPage(movieId: movie.id);
+                              },
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                final curved = CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeInOut,
+                                );
+                                return ScaleTransition(
+                                  scale: Tween<double>(
+                                    begin: 0.95,
+                                    end: 1.0,
+                                  ).animate(curved),
+                                  child: FadeTransition(
+                                    opacity: curved,
+                                    child: child,
+                                  ),
+                                );
+                              },
                             ),
                           );
                         },
@@ -302,6 +440,45 @@ class _HomePageState extends State<HomePage> {
                             // 영화 포스터
                             Hero(
                               tag: '$title-movie-${movie.id}',
+                              flightShuttleBuilder: (
+                                BuildContext flightContext,
+                                Animation<double> animation,
+                                HeroFlightDirection flightDirection,
+                                BuildContext fromHeroContext,
+                                BuildContext toHeroContext,
+                              ) {
+                                final shuttleChild =
+                                    flightDirection == HeroFlightDirection.push
+                                        ? fromHeroContext.widget
+                                        : toHeroContext.widget;
+
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: AnimatedBuilder(
+                                    animation: animation,
+                                    builder: (context, child) {
+                                      return Opacity(
+                                        opacity: animation.value,
+                                        child: child,
+                                      );
+                                    },
+                                    child: shuttleChild,
+                                  ),
+                                );
+                              },
+
+                              createRectTween: (begin, end) {
+                                if (begin == null || end == null) {
+                                  return RectTween(
+                                    begin: begin,
+                                    end: end,
+                                  ); // fallback
+                                }
+                                return MaterialRectCenterArcTween(
+                                  begin: begin,
+                                  end: end,
+                                );
+                              },
                               child: Container(
                                 width: 120,
                                 height: 180,
