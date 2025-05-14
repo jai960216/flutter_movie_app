@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  print('[main] 앱 시작');
+  print('[main] 앱 시작'); //프로젝트 시작 디버깅용
   await dotenv.load(fileName: '.env');
-  print('[main] .env 로딩 완료');
+  print('[main] .env 로딩 완료'); //프로젝트 시작 디버깅용
   runApp(const MyApp());
 }
 
